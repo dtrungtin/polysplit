@@ -29,15 +29,16 @@ public class Main {
 
 	        String json = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 	        Gson gson = new Gson();
-	        ApifyInput res = gson.fromJson(json, ApifyInput.class);
-	        System.out.println(gson.toJson(res));
+	        ApifyInput input = gson.fromJson(json, ApifyInput.class);
+	        System.out.println(gson.toJson(input));
 	        
 			PolygonSplitter polygonSplitter = new GreedyPolygonSplitter();
-			Polygon polygon = (Polygon) new WKTReader().read("POLYGON ((0 0, 100 0, 90 50, 10 50, 0 0))");
-			List<Polygon> parts = polygonSplitter.split(polygon, 2);
+			Polygon polygon = (Polygon) new WKTReader().read(input.getPolygon());
+			List<Polygon> parts = polygonSplitter.split(polygon, input.getParts());
 			
-			System.out.println(parts.get(0));
-			System.out.println(parts.get(1));
+			for (Polygon part : parts) {
+				System.out.println(part);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,4 +47,21 @@ public class Main {
 
 class ApifyInput {
 	private String polygon;
+	private Integer parts;
+
+	public String getPolygon() {
+		return polygon;
+	}
+
+	public void setPolygon(String polygon) {
+		this.polygon = polygon;
+	}
+
+	public Integer getParts() {
+		return parts;
+	}
+
+	public void setParts(Integer parts) {
+		this.parts = parts;
+	}
 }
